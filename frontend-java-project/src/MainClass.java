@@ -68,6 +68,7 @@ public class MainClass extends JFrame implements ActionListener {
 	private List<Horario> listaHorarios;
     private CookieManager cookieManager;
     private ImageIcon icon;
+    private EstilosBotones estilosBotones;
 
 	
     public static void main(String[] args) {
@@ -82,6 +83,7 @@ public class MainClass extends JFrame implements ActionListener {
     	this.posicionHorario = 0;
     	this.mejorCalificacionActual = 0;
     	this.contador = 0;
+    	this.estilosBotones = new EstilosBotones();
     	
     	
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
@@ -92,7 +94,7 @@ public class MainClass extends JFrame implements ActionListener {
     	creaVentanaPrincipal();
     	iniciarVerificacion();
     	inicializarListaHorarios();
-    	cargarHorario();
+    	cargarHorarioYActualizaPantalla();
     	
     	this.setVisible(true);
     	
@@ -121,10 +123,10 @@ public class MainClass extends JFrame implements ActionListener {
     }
     
     public void creaVentanaPrincipal() {
-    	botonGenerar = new JButton("Siguiente horario o generar otros horarios");
-    	botonGraficas = new JButton("Rúbrica");
-    	botonTablaPosiciones = new JButton("Mejores calificaciones");
-    	botonPublicar = new JButton("Publicar");
+    	botonGenerar = new JButton();
+    	botonGraficas = new JButton();
+    	botonTablaPosiciones = new JButton();
+    	botonPublicar = new JButton();
     	
     	etiqResultados1 = new JLabel();
     	etiqResultados2 = new JLabel();
@@ -134,6 +136,11 @@ public class MainClass extends JFrame implements ActionListener {
     	etiqConexion = new JLabel();
     	
     	etiqRecord.setVisible(false);
+    	
+    	botonGenerar.setUI(estilosBotones.getBasicButtonUI("Siguiente horario o generar otros horarios"));
+    	botonGraficas.setUI(estilosBotones.getBasicButtonUI("Rúbrica"));
+    	botonTablaPosiciones.setUI(estilosBotones.getBasicButtonUI("Mejores calificaciones"));
+    	botonPublicar.setUI(estilosBotones.getBasicButtonUI("Publicar"));
     	
     	this.add(botonGenerar);
     	this.add(botonGraficas);
@@ -193,14 +200,17 @@ public class MainClass extends JFrame implements ActionListener {
     		if(!ConexiónServidor()) {
         		return ;
         	}*/
+    		
+    		
     		SwingUtilities.invokeLater(() -> {
-	    		if(listaHorarios.size() == 11 ) {
-	    			System.out.println(true);
-	    			nuevosHorarios(false); 
-	    		}
-    		});
-    		SwingUtilities.invokeLater(() -> {
-    			cargarHorario();
+    			
+        		if(listaHorarios.size() == 11 ) {
+        			System.out.println(true);
+        			nuevosHorarios(false); 
+        		}
+        		
+    			cargarHorarioYActualizaPantalla();
+    			
     		});
         }
     	else if (e.getSource() == botonGraficas) ventanaGraficas(this);
@@ -270,7 +280,7 @@ public class MainClass extends JFrame implements ActionListener {
 		
     }
     
-    private void cargarHorario() {
+    private void cargarHorarioYActualizaPantalla() {
 		horario = new Horario(listaHorarios.get(0));
 		verificaMejorCalificacionActual();
 		actualizaContador();
@@ -354,7 +364,7 @@ public class MainClass extends JFrame implements ActionListener {
 	        DrawPanel drawPanel = new DrawPanel();
 	        JTextArea  etiq = new JTextArea ();
 	        JLabel etiqValidacion = new JLabel();
-	        JButton botonPublicar = new JButton("Publicar");
+	        JButton botonPublicar = new JButton();
 	        JTextField campoFecha = new JTextField(mejorHorario.getFecha());
 	        JTextField campoApodo = new JTextField("Apodo");
 	
@@ -403,6 +413,8 @@ public class MainClass extends JFrame implements ActionListener {
 	                }
 	            }
 	        });
+	        
+	        botonPublicar.setUI(estilosBotones.getBasicButtonUI("Publicar"));
 	        
 	        ventanaPublicar.add(campoFecha);
 	        ventanaPublicar.add(campoApodo);
@@ -874,4 +886,3 @@ public class MainClass extends JFrame implements ActionListener {
     }
     
 }
-
