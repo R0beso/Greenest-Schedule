@@ -11,6 +11,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
@@ -25,7 +26,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,7 +37,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 import java.util.List;
-
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.CookieManager;
@@ -44,6 +45,7 @@ import java.net.URL;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 
 public class MainClass extends JFrame implements ActionListener {
     
@@ -65,6 +67,8 @@ public class MainClass extends JFrame implements ActionListener {
     private Schedule bestSchedule;
     
     private StyleButtons buttonStyles;
+    
+    private Timer timer;
     
     private double currentBestRating;
     
@@ -143,7 +147,6 @@ public class MainClass extends JFrame implements ActionListener {
         connectionLabel = new JLabel();
         
         recordLabel.setVisible(false);
-        
 /*
         generateButton.setUI(buttonStyles.getBasicButtonUI("Next schedule or generate others"));
         chartsButton.setUI(buttonStyles.getBasicButtonUI("Rubric"));
@@ -183,6 +186,31 @@ public class MainClass extends JFrame implements ActionListener {
         counterLabel.setBounds(100, 462, 150, 25);
         connectionLabel.setBounds(305, 507, 150, 25);
         
+        //Pressed Action
+        generateButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+            	
+            	actionGenerateButton();
+            	
+                timer = new Timer(120, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                    	actionGenerateButton();
+                    }
+                });
+                timer.start();
+            }
+            
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                
+                if (timer != null) {
+                    timer.stop();
+                }
+            }
+        });
+        
         generateButton.addActionListener(this);
         chartsButton.addActionListener(this);
         leaderboardButton.addActionListener(this);
@@ -198,18 +226,21 @@ public class MainClass extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == generateButton) {
-            loadScheduleAndUpdateScreen();
-            
-            SwingUtilities.invokeLater(() -> {
-                if(scheduleList.size() == 11 ) {
-                    newSchedules(false); 
-                }
-            });
-        }
-        else if (e.getSource() == chartsButton) showChartsWindow(this);
+        if (e.getSource() == chartsButton) showChartsWindow(this);
         else if (e.getSource() == publishButton) showPublishWindow(this);
         else if (e.getSource() == leaderboardButton) showLeaderboardWindow(this);
+//        else if (e.getSource() == generateButton) actionGenerateButton();
+    }
+    
+    public void actionGenerateButton() {
+    	
+    	loadScheduleAndUpdateScreen();
+    	
+        SwingUtilities.invokeLater(() -> {
+            if(scheduleList.size() == 11 ) {
+                newSchedules(false); 
+            }
+        });
     }
 
     private void showChartsWindow(JFrame mainWindow) {
@@ -410,7 +441,7 @@ public class MainClass extends JFrame implements ActionListener {
                         return;
                     }
 //                    if(nickname.equals("NICKNAME") || nickname.isEmpty()) {
-//                        nickname = "ANONYMOUS";
+//                        nickname = "ANONYMO"; // (Max 8 characters)
                     if(nickname.equals("APODO") || nickname.isEmpty()) {
                         nickname = "ANONIMO";
                     }
