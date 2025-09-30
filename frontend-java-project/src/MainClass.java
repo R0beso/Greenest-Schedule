@@ -92,7 +92,7 @@ public class MainClass extends JFrame implements ActionListener {
     
     public MainClass() {
         super("Greenest Schedule");
-        this.backendUrl = "https://lanq.com.mx/spring/horario-api";
+        this.backendUrl = "http://129.146.17.140/spring/horario-api";
         this.scheduleList = new ArrayList<>();
         this.cookieManager = new CookieManager();
         this.schedulePosition = 0;
