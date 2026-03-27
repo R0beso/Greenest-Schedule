@@ -1,3 +1,4 @@
+# Minijuego gestión de horarios
 
 [Descargar ejecutable.jar dando clic aquí.](https://github.com/R0beso/Greenest-Schedule/raw/refs/heads/main/GreenestSchedule.jar)
 Recomendado: Sin Bugs.
